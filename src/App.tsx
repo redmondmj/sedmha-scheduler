@@ -40,7 +40,19 @@ function App() {
     const unsub = onSnapshot(doc(db, "tournament", "state"), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        if (data.teamStates) setTeamStates(data.teamStates);
+        if (data.teamStates) {
+          // Merge remote state with local schedule definition to ensure new teams are included
+          const mergedStates = scheduleData.teams.map(t => {
+            const existing = data.teamStates.find((s: any) => s.teamId === t.id);
+            return existing || { teamId: t.id, currentGameId: t.start_game, history: [] };
+          });
+          setTeamStates(mergedStates);
+          
+          // If we found new teams, sync them back to Firestore
+          if (mergedStates.length !== data.teamStates.length) {
+            updateFirestore(mergedStates);
+          }
+        }
       } else {
         updateFirestore(teamStates);
       }
