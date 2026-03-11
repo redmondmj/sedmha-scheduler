@@ -7,6 +7,7 @@
   --card: #ffffff;
   --text: #212121;
   --text-muted: #666;
+  --overlay: rgba(0, 0, 0, 0.6);
 }
 
 body {
@@ -64,15 +65,17 @@ body {
   padding: 0.75rem 1rem;
   background: #eee;
   display: flex;
-  gap: 0.5rem;
   justify-content: flex-end;
+  align-items: center;
 }
 
-.admin-bar input {
-  padding: 0.4rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100px;
+.edit-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--primary);
+  font-weight: bold;
+  font-size: 0.8rem;
 }
 
 .btn-admin {
@@ -214,6 +217,76 @@ body {
 
 .txt-win { color: var(--win); font-weight: bold; }
 .txt-loss { color: var(--loss); font-weight: bold; }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal h3 { margin: 0 0 0.5rem; }
+.modal p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+.modal input {
+  width: 100%;
+  padding: 0.8rem;
+  box-sizing: border-box;
+  font-size: 1.2rem;
+  text-align: center;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.modal input:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.btn-primary {
+  padding: 0.8rem;
+  background: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  padding: 0.8rem;
+  background: #eee;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
 .footer {
   background: white;

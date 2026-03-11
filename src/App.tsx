@@ -31,6 +31,7 @@ function App() {
   );
   const [selectedTeamId, setSelectedTeamId] = useState(scheduleData.teams[0].id);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -83,18 +84,17 @@ function App() {
     );
     setTeamStates(nextStates);
     await updateFirestore(nextStates);
+    setIsEditMode(false);
   };
 
-  const toggleEditMode = () => {
-    if (isEditMode) {
-      setIsEditMode(false);
+  const handleUnlock = () => {
+    if (pinInput === PIN) {
+      setIsEditMode(true);
+      setShowPinModal(false);
       setPinInput("");
     } else {
-      if (pinInput === PIN) {
-        setIsEditMode(true);
-      } else {
-        alert("Incorrect PIN");
-      }
+      alert("Incorrect PIN");
+      setPinInput("");
     }
   };
 
@@ -129,17 +129,14 @@ function App() {
       </header>
 
       <div className="admin-bar">
-        {!isEditMode && (
-          <input 
-            type="password" 
-            placeholder="Enter PIN to Edit" 
-            value={pinInput} 
-            onChange={(e) => setPinInput(e.target.value)}
-          />
+        {isEditMode ? (
+          <div className="edit-status">
+            <span>🔴 EDIT MODE ON</span>
+            <button onClick={() => setIsEditMode(false)} className="btn-admin">Lock</button>
+          </div>
+        ) : (
+          <button onClick={() => setShowPinModal(true)} className="btn-admin">Unlock Edit Mode</button>
         )}
-        <button onClick={toggleEditMode} className="btn-admin">
-          {isEditMode ? "Lock Edit Mode" : "Unlock Edit Mode"}
-        </button>
       </div>
 
       <main className="main-content">
@@ -215,6 +212,26 @@ function App() {
           </section>
         )}
       </main>
+
+      {showPinModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Enter PIN</h3>
+            <p>Unlock edit mode to record results.</p>
+            <input 
+              type="password" 
+              autoFocus
+              value={pinInput} 
+              onChange={(e) => setPinInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleUnlock()}
+            />
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => setShowPinModal(false)}>Cancel</button>
+              <button className="btn-primary" onClick={handleUnlock}>Unlock</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <footer className="footer">
         <div className="arena-links">
