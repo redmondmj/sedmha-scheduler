@@ -15,56 +15,44 @@
   ],
   "games": {
     "u11a": {
-      "8": {
-        "id": 8,
-        "time": "Thu 26 1:30 PM",
-        "opponent": "Moncton Hawks Firth",
-        "arena": "East Hants Sportsplex (Ice Pad B)",
-        "onWin": 13,
-        "onLoss": 26
-      },
-      "13": {
-        "id": 13,
-        "time": "Fri 27 12:30 PM",
-        "opponent": "Winner Game 7",
-        "arena": "Centennial Arena (Halifax)",
-        "onWin": 16,
-        "onLoss": 31
-      },
-      "26": {
-        "id": 26,
-        "time": "Fri 27 11:00 AM",
-        "opponent": "Loser Game 7",
-        "arena": "Centennial Arena (Halifax)",
-        "onWin": 31,
-        "onLoss": 38
-      }
+      "8": { "id": 8, "time": "Thu 26 1:30 PM", "opponent": "Moncton Hawks Firth", "arena": "Cole Harbour Place (Scotia 2)", "onWin": 13, "onLoss": 31 },
+      "13": { "id": 13, "time": "Fri 27 12:30 PM", "opponent": "Winner Game 7", "arena": "Centennial Arena (Halifax)", "onWin": 16, "onLoss": 29 },
+      "16": { "id": 16, "time": "Fri 27 5:00 PM", "opponent": "Winner Game 14", "arena": "Centennial Arena (Halifax)", "onWin": 18, "onLoss": 17 },
+      "17": { "id": 17, "time": "Sat 28 8:00 AM", "opponent": "Loser Game 15", "arena": "Centennial Arena (Halifax)", "onWin": 19, "onLoss": null },
+      "18": { "id": 18, "time": "Sat 28 9:30 AM", "opponent": "Winner Game 12", "arena": "Centennial Arena (Halifax)", "onWin": 20, "onLoss": 19 },
+      "19": { "id": 19, "time": "Sat 28 3:30 PM", "opponent": "Winner Game 17 / Loser Game 18", "arena": "Centennial Arena (Halifax)", "onWin": 21, "onLoss": null },
+      "20": { "id": 20, "time": "Sat 28 5:00 PM", "opponent": "Winner Game 15", "arena": "Centennial Arena (Halifax)", "onWin": 22, "onLoss": 21 },
+      "21": { "id": 21, "time": "Sun 29 8:00 AM", "opponent": "Winner Game 19 / Loser Game 20", "arena": "Spryfield Lions Rink", "onWin": 22, "onLoss": null },
+      "22": { "id": 22, "time": "Sun 29 1:00 PM", "opponent": "Winner Game 20 / Winner Game 21 Odyssey", "arena": "RBC Centre - Rink B", "onWin": null, "onLoss": null },
+      "29": { "id": 29, "time": "Sat 28 5:30 PM", "opponent": "Winner Game 25", "arena": "St. Margaret's Centre (Smith)", "onWin": 34, "onLoss": null },
+      "31": { "id": 31, "time": "Fri 27 2:30 PM", "opponent": "Loser Game 14", "arena": "Greenfoot Energy Center (Rink D)", "onWin": 33, "onLoss": 38 },
+      "33": { "id": 33, "time": "Sat 28 5:00 PM", "opponent": "Winner Game 30", "arena": "St. Margaret's Centre (Fountain)", "onWin": 34, "onLoss": null },
+      "34": { "id": 34, "time": "Sun 29 8:00 AM", "opponent": "Winner Game 29 / Winner Game 33", "arena": "Centennial Arena (Halifax)", "onWin": 35, "onLoss": null },
+      "35": { "id": 35, "time": "Sun 29 12:30 PM", "opponent": "Winner Game 32 Accord", "arena": "Greenfoot Energy Center (Rink B)", "onWin": null, "onLoss": null },
+      "38": { "id": 38, "time": "Sat 28 5:30 PM", "opponent": "Winner Game 37", "arena": "Cole Harbour Place (Scotia 2)", "onWin": 39, "onLoss": null },
+      "39": { "id": 39, "time": "Sun 29 9:30 AM", "opponent": "Winner Game 36 Civic", "arena": "Spryfield Lions Rink", "onWin": null, "onLoss": null }
     },
     "u13c": {
-      "11": {
-        "id": 11,
-        "time": "Thu 26 3:30 PM",
-        "opponent": "Lewisville Lightning Maltais",
-        "arena": "Greenfoot Energy Center (Rink B)",
-        "onWin": 17,
-        "onLoss": 30
-      },
-      "17": {
-        "id": 17,
-        "time": "Fri 27 12:30 PM",
-        "opponent": "Winner Game 10",
-        "arena": "Greenfoot Energy Center (Rink A)",
-        "onWin": 21,
-        "onLoss": 33
-      },
-      "30": {
-        "id": 30,
-        "time": "Fri 27 1:00 PM",
-        "opponent": "Loser Game 12",
-        "arena": "Greenfoot Energy Center (Rink D)",
-        "onWin": 33,
-        "onLoss": 40
-      }
+      "11": { "id": 11, "time": "Thu 26 3:30 PM", "opponent": "Lewisville Lightning Maltais", "arena": "Greenfoot Energy Center (Rink B)", "onWin": 17, "onLoss": 30 },
+      "17": { "id": 17, "time": "Fri 27 12:30 PM", "opponent": "Winner Game 10", "arena": "Greenfoot Energy Center (Rink A)", "onWin": 21, "onLoss": 41 },
+      "21": { "id": 21, "time": "Fri 27 8:30 PM", "opponent": "Winner Game 18", "arena": "Greenfoot Energy Center (Rink D)", "onWin": 24, "onLoss": 26 },
+      "24": { "id": 24, "time": "Sat 28 11:00 AM", "opponent": "Winner Game 20", "arena": "Greenfoot Energy Center (Rink C)", "onWin": 28, "onLoss": 25 },
+      "25": { "id": 25, "time": "Sat 28 5:30 PM", "opponent": "Winner Game 22", "arena": "Greenfoot Energy Center (Rink D)", "onWin": 27, "onLoss": null },
+      "26": { "id": 26, "time": "Sat 28 5:00 PM", "opponent": "Loser Game 23", "arena": "Greenfoot Energy Center (Rink C)", "onWin": 28, "onLoss": null },
+      "27": { "id": 27, "time": "Sun 29 8:00 AM", "opponent": "Winner Game 23", "arena": "Greenfoot Energy Center (Rink C)", "onWin": 29, "onLoss": null },
+      "28": { "id": 28, "time": "Sun 29 8:00 AM", "opponent": "Winner Game 24 / Winner Game 26", "arena": "RBC Centre - Rink B", "onWin": 29, "onLoss": null },
+      "29": { "id": 29, "time": "Sun 29 2:30 PM", "opponent": "Winner Game 28 / Winner Game 27 Odyssey", "arena": "Greenfoot Energy Center (Rink B)", "onWin": null, "onLoss": null },
+      "30": { "id": 30, "time": "Fri 27 1:00 PM", "opponent": "Loser Game 12", "arena": "Greenfoot Energy Center (Rink D)", "onWin": 36, "onLoss": 47 },
+      "36": { "id": 36, "time": "Sat 28 1:00 PM", "opponent": "Loser Game 18", "arena": "RBC Centre - Rink A", "onWin": 42, "onLoss": 51 },
+      "41": { "id": 41, "time": "Sat 28 2:00 PM", "opponent": "Winner Game 35", "arena": "RBC Centre - Rink B", "onWin": 44, "onLoss": null },
+      "42": { "id": 42, "time": "Sat 28 7:00 PM", "opponent": "Winner Game 37", "arena": "RBC Centre - Rink C", "onWin": 45, "onLoss": null },
+      "44": { "id": 44, "time": "Sat 28 8:00 PM", "opponent": "Winner Game 40", "arena": "RBC Centre - Rink D", "onWin": 46, "onLoss": null },
+      "45": { "id": 45, "time": "Sun 29 8:00 AM", "opponent": "Winner Game 43", "arena": "RBC Centre - Rink D", "onWin": 46, "onLoss": null },
+      "46": { "id": 46, "time": "Sun 29 12:30 PM", "opponent": "Winner Game 44 / Winner Game 45 Accord", "arena": "RBC Centre - Rink C", "onWin": null, "onLoss": null },
+      "47": { "id": 47, "time": "Sat 28 9:30 AM", "opponent": "Loser Game 33", "arena": "Greenfoot Energy Center (Rink A)", "onWin": 50, "onLoss": null },
+      "50": { "id": 50, "time": "Sat 28 8:00 PM", "opponent": "Winner Game 48", "arena": "Greenfoot Energy Center (Rink A)", "onWin": 52, "onLoss": null },
+      "51": { "id": 51, "time": "Sat 28 6:30 PM", "opponent": "Winner Game 49", "arena": "Greenfoot Energy Center (Rink A)", "onWin": 52, "onLoss": null },
+      "52": { "id": 52, "time": "Sun 29 10:00 AM", "opponent": "Winner Game 51 / Winner Game 50 Civic", "arena": "Greenfoot Energy Center (Rink D)", "onWin": null, "onLoss": null }
     }
   },
   "arenas": {

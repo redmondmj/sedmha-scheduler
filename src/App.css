@@ -1,158 +1,224 @@
 :root {
-  --primary-color: #d32f2f;
-  --secondary-color: #1976d2;
-  --bg-color: #f5f5f5;
-  --card-bg: #ffffff;
-  --text-main: #212121;
-  --text-light: #757575;
+  --primary: #c62828;
+  --secondary: #1565c0;
+  --win: #2e7d32;
+  --loss: #c62828;
+  --bg: #f8f9fa;
+  --card: #ffffff;
+  --text: #212121;
+  --text-muted: #666;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-main);
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 .app-container {
-  max-width: 800px;
+  max-width: 500px;
   margin: 0 auto;
-  padding: 1rem;
-}
-
-.header {
-  text-align: center;
-  padding: 2rem 0;
-  background: linear-gradient(135deg, var(--primary-color), #b71c1c);
-  color: white;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-}
-
-.team-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 600px) {
-  .team-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.team-card {
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.team-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid var(--bg-color);
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-}
-
-.team-header h2 {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-.badge {
-  background: var(--secondary-color);
+.header {
+  background: var(--primary);
   color: white;
-  padding: 0.2rem 0.6rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: bold;
+  padding: 1.5rem 1rem 0;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.game-info {
+.header h1 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.team-selector {
+  display: flex;
+  gap: 2px;
+}
+
+.tab {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+}
+
+.tab.active {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.admin-bar {
+  padding: 0.75rem 1rem;
+  background: #eee;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.admin-bar input {
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100px;
+}
+
+.btn-admin {
+  background: #666;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.main-content {
+  padding: 1.5rem 1rem;
   flex-grow: 1;
 }
 
-.game-status {
-  color: var(--primary-color);
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.status-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.record {
+  font-weight: bold;
+  background: #ddd;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.game-card {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+  position: relative;
+  border-left: 6px solid #ccc;
+}
+
+.game-card.primary {
+  border-left-color: var(--secondary);
+}
+
+.card-label {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.game-id {
+  font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-.detail {
-  margin: 0.5rem 0;
-  font-size: 0.95rem;
+.game-time {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.game-opp {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.game-arena {
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-top: 1.5rem;
 }
 
 .btn {
   padding: 0.8rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.btn:active {
-  opacity: 0.7;
-}
-
-.win {
-  background-color: #2e7d32;
   color: white;
 }
 
-.loss {
-  background-color: #d32f2f;
-  color: white;
+.win { background: var(--win); }
+.loss { background: var(--loss); }
+.reset { background: #666; width: 100%; margin-top: 1rem; }
+
+.projection-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.5rem;
 }
 
-.reset {
-  background-color: #757575;
-  color: white;
-  width: 100%;
+.game-card.mini {
+  padding: 1rem;
+  font-size: 0.85rem;
 }
 
-.history {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px dashed #ccc;
+.game-card.mini .game-time { font-size: 1rem; }
+.game-card.mini .game-opp { font-size: 0.9rem; }
+
+.win-path { border-left-color: var(--win); }
+.loss-path { border-left-color: var(--loss); }
+
+.history-section {
+  margin-top: 2.5rem;
 }
 
-.history h3 {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
+.history-list {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.history ul {
-  padding-left: 1.2rem;
-  margin: 0;
-  color: var(--text-light);
+.history-item {
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
   font-size: 0.9rem;
 }
 
-.arenas {
-  margin-top: 3rem;
-  padding: 1.5rem;
-  background: #eee;
-  border-radius: 8px;
+.txt-win { color: var(--win); font-weight: bold; }
+.txt-loss { color: var(--loss); font-weight: bold; }
+
+.footer {
+  background: white;
+  padding: 1.5rem 1rem;
+  border-top: 1px solid #eee;
 }
 
 .arena-links {
@@ -161,17 +227,20 @@ body {
   gap: 0.5rem;
 }
 
-.arena-link {
-  background: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+.arena-links a {
+  font-size: 0.8rem;
+  color: var(--secondary);
   text-decoration: none;
-  color: var(--secondary-color);
-  font-size: 0.9rem;
-  border: 1px solid var(--secondary-color);
+  background: #f0f7ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
 }
 
-.arena-link:hover {
-  background: var(--secondary-color);
-  color: white;
+.loading {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--primary);
 }

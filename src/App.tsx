@@ -9,15 +9,17 @@ type Game = {
   time: string;
   opponent: string;
   arena: string;
-  onWin: number;
-  onLoss: number;
+  onWin: number | null;
+  onLoss: number | null;
 };
 
 type TeamState = {
   teamId: string;
   currentGameId: number;
-  history: number[];
+  history: { gameId: number; win: boolean }[];
 };
+
+const PIN = "1234";
 
 function App() {
   const [teamStates, setTeamStates] = useState<TeamState[]>(
@@ -27,24 +29,22 @@ function App() {
       history: [],
     }))
   );
+  const [selectedTeamId, setSelectedTeamId] = useState(scheduleData.teams[0].id);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [pinInput, setPinInput] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Sync with Firestore
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "tournament", "state"), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        if (data.teamStates) {
-          setTeamStates(data.teamStates);
-        }
+        if (data.teamStates) setTeamStates(data.teamStates);
       } else {
-        // Initialize if document doesn't exist
         updateFirestore(teamStates);
       }
       setLoading(false);
     }, (error) => {
       console.error("Firestore Error:", error);
-      // Fallback to local state if Firestore fails
       setLoading(false);
     });
     return () => unsub();
@@ -60,21 +60,17 @@ function App() {
   const handleResult = async (teamId: string, win: boolean) => {
     const nextStates = teamStates.map((state) => {
       if (state.teamId !== teamId) return state;
-
       const currentGames = teamId.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
       const currentGame = currentGames[state.currentGameId.toString() as keyof typeof currentGames] as Game;
-
       if (!currentGame) return state;
-
       const nextGameId = win ? currentGame.onWin : currentGame.onLoss;
-
+      if (nextGameId === null) return state;
       return {
         ...state,
         currentGameId: nextGameId,
-        history: [...state.history, state.currentGameId],
+        history: [...state.history, { gameId: state.currentGameId, win }],
       };
     });
-
     setTeamStates(nextStates);
     await updateFirestore(nextStates);
   };
@@ -82,84 +78,151 @@ function App() {
   const resetTeam = async (teamId: string) => {
     const team = scheduleData.teams.find((t) => t.id === teamId);
     if (!team) return;
-    
     const nextStates = teamStates.map((state) =>
       state.teamId === teamId ? { teamId, currentGameId: team.start_game, history: [] } : state
     );
-
     setTeamStates(nextStates);
     await updateFirestore(nextStates);
   };
 
-  if (loading) {
-    return <div className="loading">Loading tournament data...</div>;
-  }
+  const toggleEditMode = () => {
+    if (isEditMode) {
+      setIsEditMode(false);
+      setPinInput("");
+    } else {
+      if (pinInput === PIN) {
+        setIsEditMode(true);
+      } else {
+        alert("Incorrect PIN");
+      }
+    }
+  };
+
+  if (loading) return <div className="loading">Loading tournament data...</div>;
+
+  const currentTeam = scheduleData.teams.find(t => t.id === selectedTeamId)!;
+  const currentState = teamStates.find(s => s.teamId === selectedTeamId)!;
+  const currentGames = selectedTeamId.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
+  const currentGame = currentGames[currentState.currentGameId.toString() as keyof typeof currentGames] as Game;
+
+  const wins = currentState.history.filter(h => h.win).length;
+  const losses = currentState.history.filter(h => !h.win).length;
+
+  const nextOnWin = currentGame?.onWin ? (currentGames[currentGame.onWin.toString() as keyof typeof currentGames] as Game) : null;
+  const nextOnLoss = currentGame?.onLoss ? (currentGames[currentGame.onLoss.toString() as keyof typeof currentGames] as Game) : null;
 
   return (
     <div className="app-container">
       <header className="header">
-        <h1>SEDMHA 2026</h1>
-        <p>Truro Bearcats Tracker</p>
+        <h1>Truro Bearcats</h1>
+        <div className="team-selector">
+          {scheduleData.teams.map(t => (
+            <button 
+              key={t.id} 
+              className={`tab ${selectedTeamId === t.id ? 'active' : ''}`}
+              onClick={() => setSelectedTeamId(t.id)}
+            >
+              {t.level}
+            </button>
+          ))}
+        </div>
       </header>
 
-      <main className="team-grid">
-        {scheduleData.teams.map((team) => {
-          const state = teamStates.find((s) => s.teamId === team.id)!;
-          const currentGames = team.id.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
-          const currentGame = currentGames[state.currentGameId.toString() as keyof typeof currentGames] as Game;
+      <div className="admin-bar">
+        {!isEditMode && (
+          <input 
+            type="password" 
+            placeholder="Enter PIN to Edit" 
+            value={pinInput} 
+            onChange={(e) => setPinInput(e.target.value)}
+          />
+        )}
+        <button onClick={toggleEditMode} className="btn-admin">
+          {isEditMode ? "Lock Edit Mode" : "Unlock Edit Mode"}
+        </button>
+      </div>
 
-          return (
-            <div key={team.id} className="team-card">
-              <div className="team-header">
-                <h2>{team.name}</h2>
-                <span className="badge">{team.level}</span>
-              </div>
+      <main className="main-content">
+        <section className="current-status">
+          <div className="status-header">
+            <h2>{currentTeam.name}</h2>
+            <div className="record">Record: {wins} - {losses}</div>
+          </div>
 
-              {currentGame ? (
-                <div className="game-info">
-                  <div className="game-status">Next Game: #{currentGame.id}</div>
-                  <div className="detail"><strong>Time:</strong> {currentGame.time}</div>
-                  <div className="detail"><strong>Opponent:</strong> {currentGame.opponent}</div>
-                  <div className="detail">
-                    <strong>Arena:</strong> {currentGame.arena}
-                  </div>
-                  <div className="actions">
-                    <button className="btn win" onClick={() => handleResult(team.id, true)}>Won Game</button>
-                    <button className="btn loss" onClick={() => handleResult(team.id, false)}>Lost Game</button>
-                  </div>
-                </div>
-              ) : (
-                <div className="game-info finished">
-                  <p>Bracket progression beyond this point needs more data from the schedules.</p>
-                  <button className="btn reset" onClick={() => resetTeam(team.id)}>Reset Bracket</button>
-                </div>
-              )}
-
-              {state.history.length > 0 && (
-                <div className="history">
-                  <h3>History</h3>
-                  <ul>
-                    {state.history.map((gid, idx) => (
-                      <li key={idx}>Game #{gid}</li>
-                    ))}
-                  </ul>
+          {currentGame ? (
+            <div className="game-card primary">
+              <div className="card-label">CURRENT GAME</div>
+              <div className="game-id">Game #{currentGame.id}</div>
+              <div className="game-time">{currentGame.time}</div>
+              <div className="game-opp">vs {currentGame.opponent}</div>
+              <div className="game-arena">📍 {currentGame.arena}</div>
+              
+              {isEditMode && (
+                <div className="actions">
+                  <button className="btn win" onClick={() => handleResult(selectedTeamId, true)}>Record WIN</button>
+                  <button className="btn loss" onClick={() => handleResult(selectedTeamId, false)}>Record LOSS</button>
                 </div>
               )}
             </div>
-          );
-        })}
+          ) : (
+            <div className="game-card finished">
+              <h3>Tournament Complete!</h3>
+              {isEditMode && <button className="btn reset" onClick={() => resetTeam(selectedTeamId)}>Reset Path</button>}
+            </div>
+          )}
+        </section>
+
+        {currentGame && (
+          <section className="projections">
+            <h3>Potential Next Games</h3>
+            <div className="projection-grid">
+              <div className="game-card mini win-path">
+                <div className="card-label">IF WIN</div>
+                {nextOnWin ? (
+                  <>
+                    <div className="game-id">Game #{nextOnWin.id}</div>
+                    <div className="game-time">{nextOnWin.time}</div>
+                    <div className="game-opp">vs {nextOnWin.opponent}</div>
+                  </>
+                ) : <div className="game-opp">Finals / TBD</div>}
+              </div>
+
+              <div className="game-card mini loss-path">
+                <div className="card-label">IF LOSS</div>
+                {nextOnLoss ? (
+                  <>
+                    <div className="game-id">Game #{nextOnLoss.id}</div>
+                    <div className="game-time">{nextOnLoss.time}</div>
+                    <div className="game-opp">vs {nextOnLoss.opponent}</div>
+                  </>
+                ) : <div className="game-opp">Finals / TBD</div>}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {currentState.history.length > 0 && (
+          <section className="history-section">
+            <h3>Path History</h3>
+            <div className="history-list">
+              {currentState.history.map((h, i) => (
+                <div key={i} className="history-item">
+                  <span>Game #{h.gameId}</span>
+                  <span className={h.win ? "txt-win" : "txt-loss"}>{h.win ? "WIN" : "LOSS"}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
-      <section className="arenas">
-        <h3>Quick Arena Links</h3>
+      <footer className="footer">
         <div className="arena-links">
           {Object.entries(scheduleData.arenas).map(([name, url]) => (
-            <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="arena-link">
-              {name}
-            </a>
+            <a key={name} href={url} target="_blank" rel="noopener noreferrer">{name}</a>
           ))}
         </div>
-      </section>
+      </footer>
     </div>
   );
 }
