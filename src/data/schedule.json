@@ -1,0 +1,76 @@
+{
+  "teams": [
+    {
+      "id": "u11a-truro",
+      "name": "U11A Truro Bearcats",
+      "level": "U11 A",
+      "start_game": 8
+    },
+    {
+      "id": "u13c-truro",
+      "name": "U13C Truro Bearcats",
+      "level": "U13 C",
+      "start_game": 11
+    }
+  ],
+  "games": {
+    "u11a": {
+      "8": {
+        "id": 8,
+        "time": "Thu 26 1:30 PM",
+        "opponent": "Moncton Hawks Firth",
+        "arena": "East Hants Sportsplex (Ice Pad B)",
+        "onWin": 13,
+        "onLoss": 26
+      },
+      "13": {
+        "id": 13,
+        "time": "Fri 27 12:30 PM",
+        "opponent": "Winner Game 7",
+        "arena": "Centennial Arena (Halifax)",
+        "onWin": 16,
+        "onLoss": 31
+      },
+      "26": {
+        "id": 26,
+        "time": "Fri 27 11:00 AM",
+        "opponent": "Loser Game 7",
+        "arena": "Centennial Arena (Halifax)",
+        "onWin": 31,
+        "onLoss": 38
+      }
+    },
+    "u13c": {
+      "11": {
+        "id": 11,
+        "time": "Thu 26 3:30 PM",
+        "opponent": "Lewisville Lightning Maltais",
+        "arena": "Greenfoot Energy Center (Rink B)",
+        "onWin": 17,
+        "onLoss": 30
+      },
+      "17": {
+        "id": 17,
+        "time": "Fri 27 12:30 PM",
+        "opponent": "Winner Game 10",
+        "arena": "Greenfoot Energy Center (Rink A)",
+        "onWin": 21,
+        "onLoss": 33
+      },
+      "30": {
+        "id": 30,
+        "time": "Fri 27 1:00 PM",
+        "opponent": "Loser Game 12",
+        "arena": "Greenfoot Energy Center (Rink D)",
+        "onWin": 33,
+        "onLoss": 40
+      }
+    }
+  },
+  "arenas": {
+    "East Hants Sportsplex": "https://maps.app.goo.gl/r5yH3b7vX1p7H7u68",
+    "Centennial Arena": "https://maps.app.goo.gl/3y8H7vX1p7H7u68",
+    "Greenfoot Energy Center": "https://maps.app.goo.gl/r5yH3b7vX1p7H7u68",
+    "RBC Centre": "https://maps.app.goo.gl/3y8H7vX1p7H7u68"
+  }
+}
