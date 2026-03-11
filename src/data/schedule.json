@@ -56,9 +56,12 @@
     }
   },
   "arenas": {
-    "East Hants Sportsplex": "https://maps.app.goo.gl/r5yH3b7vX1p7H7u68",
-    "Centennial Arena": "https://maps.app.goo.gl/3y8H7vX1p7H7u68",
-    "Greenfoot Energy Center": "https://maps.app.goo.gl/r5yH3b7vX1p7H7u68",
-    "RBC Centre": "https://maps.app.goo.gl/3y8H7vX1p7H7u68"
+    "Cole Harbour Place": "https://www.google.com/maps/search/?api=1&query=Cole+Harbour+Place+Dartmouth",
+    "Centennial Arena": "https://www.google.com/maps/search/?api=1&query=Centennial+Arena+Halifax",
+    "Greenfoot Energy Center": "https://www.google.com/maps/search/?api=1&query=Greenfoot+Energy+Centre+Dartmouth",
+    "RBC Centre": "https://www.google.com/maps/search/?api=1&query=RBC+Centre+Dartmouth",
+    "St. Margaret's Centre": "https://www.google.com/maps/search/?api=1&query=St.+Margaret's+Centre+Upper+Tantallon",
+    "Spryfield Lions Rink": "https://www.google.com/maps/search/?api=1&query=Spryfield+Lions+Rink",
+    "East Hants Sportsplex": "https://www.google.com/maps/search/?api=1&query=East+Hants+Sportsplex+Lantz"
   }
 }

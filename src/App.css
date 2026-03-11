@@ -157,6 +157,22 @@ body {
 .game-arena {
   font-size: 0.9rem;
   color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.maps-link {
+  color: var(--secondary);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.8rem;
+  background: #e3f2fd;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid var(--secondary);
 }
 
 .actions {
@@ -193,6 +209,7 @@ body {
 
 .game-card.mini .game-time { font-size: 1rem; }
 .game-card.mini .game-opp { font-size: 0.9rem; }
+.game-card.mini .game-arena { margin-top: 0.5rem; }
 
 .win-path { border-left-color: var(--win); }
 .loss-path { border-left-color: var(--loss); }

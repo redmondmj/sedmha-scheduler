@@ -98,6 +98,11 @@ function App() {
     }
   };
 
+  const getArenaLink = (arenaName: string) => {
+    const key = Object.keys(scheduleData.arenas).find(k => arenaName.includes(k));
+    return key ? scheduleData.arenas[key as keyof typeof scheduleData.arenas] : null;
+  };
+
   if (loading) return <div className="loading">Loading tournament data...</div>;
 
   const currentTeam = scheduleData.teams.find(t => t.id === selectedTeamId)!;
@@ -152,7 +157,14 @@ function App() {
               <div className="game-id">Game #{currentGame.id}</div>
               <div className="game-time">{currentGame.time}</div>
               <div className="game-opp">vs {currentGame.opponent}</div>
-              <div className="game-arena">📍 {currentGame.arena}</div>
+              <div className="game-arena">
+                📍 {currentGame.arena}
+                {getArenaLink(currentGame.arena) && (
+                  <a href={getArenaLink(currentGame.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
+                    Open in Maps
+                  </a>
+                )}
+              </div>
               
               {isEditMode && (
                 <div className="actions">
@@ -180,6 +192,13 @@ function App() {
                     <div className="game-id">Game #{nextOnWin.id}</div>
                     <div className="game-time">{nextOnWin.time}</div>
                     <div className="game-opp">vs {nextOnWin.opponent}</div>
+                    <div className="game-arena">
+                      {getArenaLink(nextOnWin.arena) && (
+                        <a href={getArenaLink(nextOnWin.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
+                          Maps
+                        </a>
+                      )}
+                    </div>
                   </>
                 ) : <div className="game-opp">Finals / TBD</div>}
               </div>
@@ -191,6 +210,13 @@ function App() {
                     <div className="game-id">Game #{nextOnLoss.id}</div>
                     <div className="game-time">{nextOnLoss.time}</div>
                     <div className="game-opp">vs {nextOnLoss.opponent}</div>
+                    <div className="game-arena">
+                      {getArenaLink(nextOnLoss.arena) && (
+                        <a href={getArenaLink(nextOnLoss.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
+                          Maps
+                        </a>
+                      )}
+                    </div>
                   </>
                 ) : <div className="game-opp">Finals / TBD</div>}
               </div>
