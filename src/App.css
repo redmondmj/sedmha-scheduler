@@ -193,7 +193,21 @@ body {
 
 .win { background: var(--win); }
 .loss { background: var(--loss); }
-.reset { background: #666; width: 100%; margin-top: 1rem; }
+
+.danger-zone {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn.undo {
+  background: #f57c00;
+}
+
+.btn.reset {
+  background: #455a64;
+}
 
 .projection-grid {
   display: grid;

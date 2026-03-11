@@ -76,7 +76,23 @@ function App() {
     await updateFirestore(nextStates);
   };
 
+  const handleUndo = async (teamId: string) => {
+    const nextStates = teamStates.map((state) => {
+      if (state.teamId !== teamId || state.history.length === 0) return state;
+      const lastHistory = state.history[state.history.length - 1];
+      return {
+        ...state,
+        currentGameId: lastHistory.gameId,
+        history: state.history.slice(0, -1),
+      };
+    });
+    setTeamStates(nextStates);
+    await updateFirestore(nextStates);
+  };
+
   const resetTeam = async (teamId: string) => {
+    if (!window.confirm("Are you sure you want to reset this team's path back to the start?")) return;
+    
     const team = scheduleData.teams.find((t) => t.id === teamId);
     if (!team) return;
     const nextStates = teamStates.map((state) =>
@@ -84,7 +100,6 @@ function App() {
     );
     setTeamStates(nextStates);
     await updateFirestore(nextStates);
-    setIsEditMode(false);
   };
 
   const handleUnlock = () => {
@@ -161,7 +176,7 @@ function App() {
                 📍 {currentGame.arena}
                 {getArenaLink(currentGame.arena) && (
                   <a href={getArenaLink(currentGame.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
-                    Open in Maps
+                    Maps
                   </a>
                 )}
               </div>
@@ -176,7 +191,15 @@ function App() {
           ) : (
             <div className="game-card finished">
               <h3>Tournament Complete!</h3>
-              {isEditMode && <button className="btn reset" onClick={() => resetTeam(selectedTeamId)}>Reset Path</button>}
+            </div>
+          )}
+
+          {isEditMode && (
+            <div className="danger-zone">
+              {currentState.history.length > 0 && (
+                <button className="btn undo" onClick={() => handleUndo(selectedTeamId)}>Undo Last Result</button>
+              )}
+              <button className="btn reset" onClick={() => resetTeam(selectedTeamId)}>Reset Path</button>
             </div>
           )}
         </section>
