@@ -1,0 +1,2 @@
+description = "Activate the GitHub Specialist skill and perform a workspace audit."
+prompt = "Please activate the 'github-specialist' skill and follow its protocols to perform a workspace audit and sync check on this repository."

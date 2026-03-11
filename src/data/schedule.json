@@ -29,7 +29,7 @@
       "33": { "id": 33, "time": "Sat 28 5:00 PM", "opponent": "Winner Game 30", "arena": "St. Margaret's Centre (Fountain)", "onWin": 34, "onLoss": null, "tier": "Accord" },
       "34": { "id": 34, "time": "Sun 29 8:00 AM", "opponent": "Winner Game 29 / Winner Game 33", "arena": "Centennial Arena (Halifax)", "onWin": 35, "onLoss": null, "tier": "Accord" },
       "35": { "id": 35, "time": "Sun 29 12:30 PM", "opponent": "Winner Game 32 Accord", "arena": "Greenfoot Energy Center (Rink B)", "onWin": null, "onLoss": null, "tier": "Accord (CHAMPIONSHIP)" },
-      "38": { "id": 38, "time": "Sat 28 5:30 PM", "opponent": "Winner Game 37", "arena": "Cole Harbour Place (Scotia 2)", "onWin": 39, "onLoss": null, "tier": "Civic" },
+      "38": { "id": 38, "time": "Sat 28 7:00 PM", "opponent": "Winner Game 37", "arena": "Cole Harbour Place (Scotia 2)", "onWin": 39, "onLoss": null, "tier": "Civic" },
       "39": { "id": 39, "time": "Sun 29 9:30 AM", "opponent": "Winner Game 36 Civic", "arena": "Spryfield Lions Rink", "onWin": null, "onLoss": null, "tier": "Civic (CHAMPIONSHIP)" }
     },
     "u13c": {
