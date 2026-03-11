@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import scheduleData from './data/schedule.json';
+import { db } from './firebase';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 
 type Game = {
   id: number;
@@ -25,37 +27,73 @@ function App() {
       history: [],
     }))
   );
+  const [loading, setLoading] = useState(true);
 
-  const handleResult = (teamId: string, win: boolean) => {
-    setTeamStates((prev) =>
-      prev.map((state) => {
-        if (state.teamId !== teamId) return state;
+  // Sync with Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, "tournament", "state"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.teamStates) {
+          setTeamStates(data.teamStates);
+        }
+      } else {
+        // Initialize if document doesn't exist
+        updateFirestore(teamStates);
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error("Firestore Error:", error);
+      // Fallback to local state if Firestore fails
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
 
-        const currentGames = teamId.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
-        const currentGame = currentGames[state.currentGameId.toString() as keyof typeof currentGames] as Game;
-
-        if (!currentGame) return state;
-
-        const nextGameId = win ? currentGame.onWin : currentGame.onLoss;
-
-        return {
-          ...state,
-          currentGameId: nextGameId,
-          history: [...state.history, state.currentGameId],
-        };
-      })
-    );
+  const updateFirestore = async (newStates: TeamState[]) => {
+    await setDoc(doc(db, "tournament", "state"), {
+      teamStates: newStates,
+      updatedAt: new Date().toISOString()
+    });
   };
 
-  const resetTeam = (teamId: string) => {
+  const handleResult = async (teamId: string, win: boolean) => {
+    const nextStates = teamStates.map((state) => {
+      if (state.teamId !== teamId) return state;
+
+      const currentGames = teamId.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
+      const currentGame = currentGames[state.currentGameId.toString() as keyof typeof currentGames] as Game;
+
+      if (!currentGame) return state;
+
+      const nextGameId = win ? currentGame.onWin : currentGame.onLoss;
+
+      return {
+        ...state,
+        currentGameId: nextGameId,
+        history: [...state.history, state.currentGameId],
+      };
+    });
+
+    setTeamStates(nextStates);
+    await updateFirestore(nextStates);
+  };
+
+  const resetTeam = async (teamId: string) => {
     const team = scheduleData.teams.find((t) => t.id === teamId);
     if (!team) return;
-    setTeamStates((prev) =>
-      prev.map((state) =>
-        state.teamId === teamId ? { teamId, currentGameId: team.start_game, history: [] } : state
-      )
+    
+    const nextStates = teamStates.map((state) =>
+      state.teamId === teamId ? { teamId, currentGameId: team.start_game, history: [] } : state
     );
+
+    setTeamStates(nextStates);
+    await updateFirestore(nextStates);
   };
+
+  if (loading) {
+    return <div className="loading">Loading tournament data...</div>;
+  }
 
   return (
     <div className="app-container">
