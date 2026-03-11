@@ -62,8 +62,9 @@ function App() {
   const handleResult = async (teamId: string, win: boolean) => {
     const nextStates = teamStates.map((state) => {
       if (state.teamId !== teamId) return state;
-      const currentGames = teamId.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
-      const currentGame = currentGames[state.currentGameId.toString() as keyof typeof currentGames] as Game;
+      const gameCategory = teamId.split('-')[0];
+      const categoryGames = (scheduleData.games as any)[gameCategory];
+      const currentGame = categoryGames[state.currentGameId.toString()] as Game;
       if (!currentGame) return state;
       const nextGameId = win ? currentGame.onWin : currentGame.onLoss;
       
@@ -124,10 +125,11 @@ function App() {
 
   const currentTeam = scheduleData.teams.find(t => t.id === selectedTeamId)!;
   const currentState = teamStates.find(s => s.teamId === selectedTeamId)!;
-  const currentGames = selectedTeamId.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
+  const gameCategory = selectedTeamId.split('-')[0];
+  const currentGames = (scheduleData.games as any)[gameCategory];
   
   const currentGame = currentState.currentGameId !== -1 
-    ? (currentGames[currentState.currentGameId.toString() as keyof typeof currentGames] as Game)
+    ? (currentGames[currentState.currentGameId.toString()] as Game)
     : null;
 
   const wins = currentState.history.filter(h => h.win).length;
