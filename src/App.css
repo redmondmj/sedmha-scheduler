@@ -8,6 +8,7 @@
   --text: #212121;
   --text-muted: #666;
   --overlay: rgba(0, 0, 0, 0.6);
+  --tier-bg: #eceff1;
 }
 
 body {
@@ -100,9 +101,20 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.status-header h2 {
+.team-info-main h2 {
   margin: 0;
   font-size: 1.2rem;
+}
+
+.tier-badge {
+  font-size: 0.75rem;
+  color: var(--secondary);
+  background: #e3f2fd;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-weight: bold;
 }
 
 .record {
@@ -135,6 +147,13 @@ body {
   text-transform: uppercase;
 }
 
+.tier-sub {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--secondary);
+  margin-bottom: 0.2rem;
+}
+
 .game-id {
   font-size: 1.1rem;
   font-weight: bold;
@@ -152,6 +171,17 @@ body {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
   font-weight: 500;
+}
+
+.game-opp-status {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #666;
+  padding: 1rem 0;
+}
+
+.game-opp-status.eliminated {
+  color: var(--loss);
 }
 
 .game-arena {

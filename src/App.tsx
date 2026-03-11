@@ -11,6 +11,7 @@ type Game = {
   arena: string;
   onWin: number | null;
   onLoss: number | null;
+  tier?: string;
 };
 
 type TeamState = {
@@ -65,10 +66,11 @@ function App() {
       const currentGame = currentGames[state.currentGameId.toString() as keyof typeof currentGames] as Game;
       if (!currentGame) return state;
       const nextGameId = win ? currentGame.onWin : currentGame.onLoss;
-      if (nextGameId === null) return state;
+      
+      // If nextGameId is null, we set a special value or handle it as "Finished"
       return {
         ...state,
-        currentGameId: nextGameId,
+        currentGameId: nextGameId || -1, // -1 means finished/out
         history: [...state.history, { gameId: state.currentGameId, win }],
       };
     });
@@ -123,7 +125,10 @@ function App() {
   const currentTeam = scheduleData.teams.find(t => t.id === selectedTeamId)!;
   const currentState = teamStates.find(s => s.teamId === selectedTeamId)!;
   const currentGames = selectedTeamId.includes('u11a') ? scheduleData.games.u11a : scheduleData.games.u13c;
-  const currentGame = currentGames[currentState.currentGameId.toString() as keyof typeof currentGames] as Game;
+  
+  const currentGame = currentState.currentGameId !== -1 
+    ? (currentGames[currentState.currentGameId.toString() as keyof typeof currentGames] as Game)
+    : null;
 
   const wins = currentState.history.filter(h => h.win).length;
   const losses = currentState.history.filter(h => !h.win).length;
@@ -162,7 +167,10 @@ function App() {
       <main className="main-content">
         <section className="current-status">
           <div className="status-header">
-            <h2>{currentTeam.name}</h2>
+            <div className="team-info-main">
+              <h2>{currentTeam.name}</h2>
+              {currentGame && <div className="tier-badge">Tier: {currentGame.tier}</div>}
+            </div>
             <div className="record">Record: {wins} - {losses}</div>
           </div>
 
@@ -190,7 +198,8 @@ function App() {
             </div>
           ) : (
             <div className="game-card finished">
-              <h3>Tournament Complete!</h3>
+              <h3>Tournament Complete</h3>
+              <p>The Bearcats have finished their path.</p>
             </div>
           )}
 
@@ -212,6 +221,7 @@ function App() {
                 <div className="card-label">IF WIN</div>
                 {nextOnWin ? (
                   <>
+                    <div className="tier-sub">{nextOnWin.tier}</div>
                     <div className="game-id">Game #{nextOnWin.id}</div>
                     <div className="game-time">{nextOnWin.time}</div>
                     <div className="game-opp">vs {nextOnWin.opponent}</div>
@@ -223,13 +233,14 @@ function App() {
                       )}
                     </div>
                   </>
-                ) : <div className="game-opp">Finals / TBD</div>}
+                ) : <div className="game-opp-status">Tournament Complete</div>}
               </div>
 
               <div className="game-card mini loss-path">
                 <div className="card-label">IF LOSS</div>
                 {nextOnLoss ? (
                   <>
+                    <div className="tier-sub">{nextOnLoss.tier}</div>
                     <div className="game-id">Game #{nextOnLoss.id}</div>
                     <div className="game-time">{nextOnLoss.time}</div>
                     <div className="game-opp">vs {nextOnLoss.opponent}</div>
@@ -241,7 +252,11 @@ function App() {
                       )}
                     </div>
                   </>
-                ) : <div className="game-opp">Finals / TBD</div>}
+                ) : (
+                  <div className="game-opp-status eliminated">
+                    {losses >= 2 ? "OUT - ELIMINATED" : "Tournament Complete"}
+                  </div>
+                )}
               </div>
             </div>
           </section>
