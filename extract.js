@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 const u11_lines = `
 Thu 26 1:30 PM U11 A 1 Riverview Blues Dartmouth Whalers Greenfoot Energy Center (Rink C)
