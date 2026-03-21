@@ -35,6 +35,11 @@ function App() {
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
   const [loading, setLoading] = useState(true);
+  const [whatIfSteps, setWhatIfSteps] = useState<{gameId: number, win: boolean}[]>([]);
+
+  useEffect(() => {
+    setWhatIfSteps([]);
+  }, [selectedTeamId]);
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "tournament", "state"), (docSnap) => {
@@ -133,13 +138,30 @@ function App() {
     return key ? scheduleData.arenas[key as keyof typeof scheduleData.arenas] : null;
   };
 
+  const handleWhatIf = (gameId: number, win: boolean) => {
+    setWhatIfSteps([...whatIfSteps, { gameId, win }]);
+  };
+
   if (loading) return <div className="loading">Loading tournament data...</div>;
 
   const currentTeam = scheduleData.teams.find(t => t.id === selectedTeamId)!;
-  const currentState = teamStates.find(s => s.teamId === selectedTeamId)!;
+  const actualState = teamStates.find(s => s.teamId === selectedTeamId)!;
   const gameCategory = selectedTeamId.split('-')[0];
   const currentGames = (scheduleData.games as any)[gameCategory];
   
+  let tempGameId = actualState.currentGameId;
+  for (const step of whatIfSteps) {
+    const game = currentGames[tempGameId.toString()];
+    if (!game) break;
+    tempGameId = step.win ? (game.onWin || -1) : (game.onLoss || -1);
+  }
+
+  const currentState = {
+    ...actualState,
+    currentGameId: tempGameId,
+    history: [...actualState.history, ...whatIfSteps.map(step => ({ ...step, isWhatIf: true }))]
+  };
+
   const currentGame = currentState.currentGameId !== -1 
     ? (currentGames[currentState.currentGameId.toString()] as Game)
     : null;
@@ -190,7 +212,7 @@ function App() {
 
           {currentGame ? (
             <div className="game-card primary">
-              <div className="card-label">CURRENT GAME</div>
+              <div className="card-label">{whatIfSteps.length > 0 ? "WHAT-IF POSITION" : "CURRENT GAME"}</div>
               <div className="game-id">Game #{currentGame.id}</div>
               <div className="game-time">{currentGame.time}</div>
               <div className="game-opp">vs {currentGame.opponent}</div>
@@ -203,7 +225,7 @@ function App() {
                 )}
               </div>
               
-              {isEditMode && (
+              {isEditMode && whatIfSteps.length === 0 && (
                 <div className="actions">
                   <button className="btn win" onClick={() => handleResult(selectedTeamId, true)}>Record WIN</button>
                   <button className="btn loss" onClick={() => handleResult(selectedTeamId, false)}>Record LOSS</button>
@@ -217,9 +239,9 @@ function App() {
             </div>
           )}
 
-          {isEditMode && (
+          {isEditMode && whatIfSteps.length === 0 && (
             <div className="danger-zone">
-              {currentState.history.length > 0 && (
+              {actualState.history.length > 0 && (
                 <button className="btn undo" onClick={() => handleUndo(selectedTeamId)}>Undo Last Result</button>
               )}
               <button className="btn reset" onClick={() => resetTeam(selectedTeamId)}>Reset Path</button>
@@ -229,10 +251,32 @@ function App() {
 
         {currentGame && (
           <section className="projections">
-            <h3>Potential Next Games</h3>
+            <div className="projections-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <div>
+                <h3>Potential Next Games</h3>
+                {whatIfSteps.length > 0 && (
+                  <div style={{ fontSize: '0.8rem', color: '#0056b3', marginTop: '4px', fontWeight: 'bold' }}>
+                    Simulation Path: {whatIfSteps.map((step, i) => (
+                      <span key={i}>
+                        {step.win ? 'W' : 'L'} {i < whatIfSteps.length - 1 ? ' → ' : ' → '}
+                      </span>
+                    ))} Current
+                  </div>
+                )}
+              </div>
+              {whatIfSteps.length > 0 && (
+                <button className="btn-secondary" onClick={() => setWhatIfSteps([])} style={{ fontSize: '0.8rem', padding: '4px 8px' }}>
+                  Clear What-If
+                </button>
+              )}
+            </div>
             <div className="projection-grid">
-              <div className="game-card mini win-path">
-                <div className="card-label">IF WIN</div>
+              <div 
+                className={`game-card mini win-path ${nextOnWin ? 'clickable' : ''}`}
+                onClick={() => nextOnWin && handleWhatIf(currentGame.id, true)}
+                style={nextOnWin ? { cursor: 'pointer', opacity: 0.9, transition: 'opacity 0.2s' } : {}}
+              >
+                <div className="card-label">IF WIN {nextOnWin && '(Click to explore)'}</div>
                 {nextOnWin ? (
                   <>
                     <div className="tier-sub">{nextOnWin.tier}</div>
@@ -240,18 +284,18 @@ function App() {
                     <div className="game-time">{nextOnWin.time}</div>
                     <div className="game-opp">vs {nextOnWin.opponent}</div>
                     <div className="game-arena">
-                      {getArenaLink(nextOnWin.arena) && (
-                        <a href={getArenaLink(nextOnWin.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
-                          Maps
-                        </a>
-                      )}
+                      📍 {nextOnWin.arena}
                     </div>
                   </>
                 ) : <div className="game-opp-status">Tournament Complete</div>}
               </div>
 
-              <div className="game-card mini loss-path">
-                <div className="card-label">IF LOSS</div>
+              <div 
+                className={`game-card mini loss-path ${nextOnLoss ? 'clickable' : ''}`}
+                onClick={() => nextOnLoss && handleWhatIf(currentGame.id, false)}
+                style={nextOnLoss ? { cursor: 'pointer', opacity: 0.9, transition: 'opacity 0.2s' } : {}}
+              >
+                <div className="card-label">IF LOSS {nextOnLoss && '(Click to explore)'}</div>
                 {nextOnLoss ? (
                   <>
                     <div className="tier-sub">{nextOnLoss.tier}</div>
@@ -259,11 +303,7 @@ function App() {
                     <div className="game-time">{nextOnLoss.time}</div>
                     <div className="game-opp">vs {nextOnLoss.opponent}</div>
                     <div className="game-arena">
-                      {getArenaLink(nextOnLoss.arena) && (
-                        <a href={getArenaLink(nextOnLoss.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
-                          Maps
-                        </a>
-                      )}
+                      📍 {nextOnLoss.arena}
                     </div>
                   </>
                 ) : (
@@ -281,9 +321,11 @@ function App() {
             <h3>Path History</h3>
             <div className="history-list">
               {currentState.history.map((h, i) => (
-                <div key={i} className="history-item">
+                <div key={i} className={`history-item ${(h as any).isWhatIf ? 'what-if-item' : ''}`} style={(h as any).isWhatIf ? { borderStyle: 'dashed', opacity: 0.8 } : {}}>
                   <span>Game #{h.gameId}</span>
-                  <span className={h.win ? "txt-win" : "txt-loss"}>{h.win ? "WIN" : "LOSS"}</span>
+                  <span className={h.win ? "txt-win" : "txt-loss"}>
+                    {h.win ? "WIN" : "LOSS"} {(h as any).isWhatIf && <small style={{ color: '#888', marginLeft: '5px' }}>(What If)</small>}
+                  </span>
                 </div>
               ))}
             </div>
