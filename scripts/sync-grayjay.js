@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, terminate } from 'firebase/firestore';
 import fs from 'fs';
 
 const firebaseConfig = {
@@ -120,10 +120,12 @@ async function main() {
     const scheduleData = JSON.parse(fs.readFileSync('./src/data/schedule.json', 'utf8'));
     
     const stateDocRef = doc(db, "tournament", "state");
+    const gamesConfigRef = doc(db, "tournament", "gamesConfig");
     const stateDoc = await getDoc(stateDocRef);
+    const gamesConfigDoc = await getDoc(gamesConfigRef);
     let dbData = stateDoc.exists() ? stateDoc.data() : {};
     let teamStates = dbData.teamStates || scheduleData.teams.map((t) => ({ teamId: t.id, currentGameId: t.start_game, history: [] }));
-    let gamesConfig = dbData.gamesConfig || {};
+    let gamesConfig = gamesConfigDoc.exists() ? gamesConfigDoc.data() : {};
 
     // Merge any new teams from schedule.json that aren't in Firebase yet
     for (const team of scheduleData.teams) {
@@ -189,13 +191,21 @@ async function main() {
         }
     }
 
-    if (madeChanges) {
-        await setDoc(stateDocRef, { teamStates, gamesConfig, updatedAt: new Date().toISOString() });
-        console.log("Save complete!");
-    } else {
-        console.log("No new updates required.");
-    }
+    // Save teamStates
+    console.log(`Writing to Firestore: ${teamStates.length} teams...`);
+    await setDoc(stateDocRef, { teamStates, updatedAt: new Date().toISOString() });
     
+    // Save gamesConfig separately to avoid onSnapshot overwrites
+    console.log(`Writing gamesConfig: ${Object.keys(gamesConfig).length} divisions...`);
+    await setDoc(gamesConfigRef, gamesConfig);
+    
+    // Verify gamesConfig persisted
+    const verifyDoc = await getDoc(gamesConfigRef);
+    const verifyData = verifyDoc.data();
+    console.log(`Verified gamesConfig divisions: [${Object.keys(verifyData || {}).join(', ')}]`);
+    
+    // Ensure Firestore flushes all writes before exiting
+    await terminate(db);
     process.exit(0);
 }
 

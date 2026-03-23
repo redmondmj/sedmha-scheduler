@@ -54,9 +54,6 @@ function App() {
     const unsub = onSnapshot(doc(db, "tournament", "state"), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        if (data.gamesConfig) {
-          setGamesConfig(data.gamesConfig);
-        }
         if (data.teamStates) {
           // Merge remote state with local schedule definition to ensure new teams are included
           const mergedStates = scheduleData.teams.map(t => {
@@ -78,14 +75,22 @@ function App() {
       console.error("Firestore Error:", error);
       setLoading(false);
     });
-    return () => unsub();
+
+    // Separate listener for gamesConfig (isolated from state writes)
+    const unsubGames = onSnapshot(doc(db, "tournament", "gamesConfig"), (docSnap) => {
+      if (docSnap.exists()) {
+        setGamesConfig(docSnap.data());
+      }
+    });
+
+    return () => { unsub(); unsubGames(); };
   }, []);
 
   const updateFirestore = async (newStates: TeamState[]) => {
     await setDoc(doc(db, "tournament", "state"), {
       teamStates: newStates,
       updatedAt: new Date().toISOString()
-    });
+    }, { merge: true });
   };
 
   const handleResult = async (teamId: string, win: boolean) => {

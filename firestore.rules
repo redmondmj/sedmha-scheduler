@@ -4,5 +4,8 @@ service cloud.firestore {
     match /tournament/state {
       allow read, write: if true;
     }
+    match /tournament/gamesConfig {
+      allow read, write: if true;
+    }
   }
 }
