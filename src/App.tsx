@@ -17,7 +17,15 @@ type Game = {
 type TeamState = {
   teamId: string;
   currentGameId: number;
-  history: { gameId: number; win: boolean }[];
+  currentOpponent?: string;
+  currentArena?: string;
+  history: { 
+    gameId: number; 
+    win: boolean;
+    opponent?: string;
+    score?: string;
+    isWhatIf?: boolean;
+  }[];
 };
 
 const PIN = "1234";
@@ -35,7 +43,8 @@ function App() {
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
   const [loading, setLoading] = useState(true);
-  const [whatIfSteps, setWhatIfSteps] = useState<{gameId: number, win: boolean}[]>([]);
+  const [whatIfSteps, setWhatIfSteps] = useState<{gameId: number, win: boolean, opponent?: string, score?: string}[]>([]);
+  const [gamesConfig, setGamesConfig] = useState<any>({});
 
   useEffect(() => {
     setWhatIfSteps([]);
@@ -45,6 +54,9 @@ function App() {
     const unsub = onSnapshot(doc(db, "tournament", "state"), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
+        if (data.gamesConfig) {
+          setGamesConfig(data.gamesConfig);
+        }
         if (data.teamStates) {
           // Merge remote state with local schedule definition to ensure new teams are included
           const mergedStates = scheduleData.teams.map(t => {
@@ -147,7 +159,18 @@ function App() {
   const currentTeam = scheduleData.teams.find(t => t.id === selectedTeamId)!;
   const actualState = teamStates.find(s => s.teamId === selectedTeamId)!;
   const gameCategory = selectedTeamId.split('-')[0];
-  const currentGames = (scheduleData.games as any)[gameCategory];
+  
+  // Clone current games and overlay with live config from Firebase scraping
+  const currentGamesRaw = (scheduleData.games as any)[gameCategory];
+  const currentGames: any = {};
+  const liveGames = gamesConfig[gameCategory] || {};
+  Object.keys(currentGamesRaw).forEach(gameId => {
+    currentGames[gameId] = { ...currentGamesRaw[gameId] };
+    if (liveGames[gameId]) {
+      if (liveGames[gameId].arena) currentGames[gameId].arena = liveGames[gameId].arena;
+      if (liveGames[gameId].opponent) currentGames[gameId].opponent = liveGames[gameId].opponent;
+    }
+  });
   
   let tempGameId = actualState.currentGameId;
   for (const step of whatIfSteps) {
@@ -215,11 +238,11 @@ function App() {
               <div className="card-label">{whatIfSteps.length > 0 ? "WHAT-IF POSITION" : "CURRENT GAME"}</div>
               <div className="game-id">Game #{currentGame.id}</div>
               <div className="game-time">{currentGame.time}</div>
-              <div className="game-opp">vs {currentGame.opponent}</div>
+              <div className="game-opp">vs {(whatIfSteps.length === 0 && currentState.currentOpponent) ? currentState.currentOpponent : currentGame.opponent}</div>
               <div className="game-arena">
-                📍 {currentGame.arena}
-                {getArenaLink(currentGame.arena) && (
-                  <a href={getArenaLink(currentGame.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
+                📍 {(whatIfSteps.length === 0 && currentState.currentArena && currentState.currentArena !== "TBD") ? currentState.currentArena : (currentGame.arena || "TBD")}
+                {getArenaLink((whatIfSteps.length === 0 && currentState.currentArena && currentState.currentArena !== "TBD") ? currentState.currentArena : currentGame.arena) && (
+                  <a href={getArenaLink((whatIfSteps.length === 0 && currentState.currentArena && currentState.currentArena !== "TBD") ? currentState.currentArena : currentGame.arena)!} target="_blank" rel="noopener noreferrer" className="maps-link">
                     Maps
                   </a>
                 )}
@@ -284,7 +307,7 @@ function App() {
                     <div className="game-time">{nextOnWin.time}</div>
                     <div className="game-opp">vs {nextOnWin.opponent}</div>
                     <div className="game-arena">
-                      📍 {nextOnWin.arena}
+                      📍 {nextOnWin.arena || "TBD"}
                     </div>
                   </>
                 ) : <div className="game-opp-status">Tournament Complete</div>}
@@ -303,7 +326,7 @@ function App() {
                     <div className="game-time">{nextOnLoss.time}</div>
                     <div className="game-opp">vs {nextOnLoss.opponent}</div>
                     <div className="game-arena">
-                      📍 {nextOnLoss.arena}
+                      📍 {nextOnLoss.arena || "TBD"}
                     </div>
                   </>
                 ) : (
@@ -322,8 +345,9 @@ function App() {
             <div className="history-list">
               {currentState.history.map((h, i) => (
                 <div key={i} className={`history-item ${(h as any).isWhatIf ? 'what-if-item' : ''}`} style={(h as any).isWhatIf ? { borderStyle: 'dashed', opacity: 0.8 } : {}}>
-                  <span>Game #{h.gameId}</span>
+                  <span>Game #{h.gameId} {h.opponent && <span style={{fontSize: '0.85em', color: '#555'}}>vs {h.opponent}</span>}</span>
                   <span className={h.win ? "txt-win" : "txt-loss"}>
+                    {h.score && <span style={{color: '#333', marginRight: '6px', fontSize: '0.9em'}}>{h.score}</span>}
                     {h.win ? "WIN" : "LOSS"} {(h as any).isWhatIf && <small style={{ color: '#888', marginLeft: '5px' }}>(What If)</small>}
                   </span>
                 </div>

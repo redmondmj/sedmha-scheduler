@@ -25,7 +25,7 @@
         "id": 8,
         "time": "Thu 26 1:30 PM",
         "opponent": "Initial Opponent (see schedule)",
-        "arena": "Truro Bearcats Moncton Hawks Firth East Hants Sportsplex (Ice Pad B)",
+        "arena": "East Hants Sportsplex",
         "onWin": 13,
         "onLoss": 31,
         "tier": "TBD"
@@ -171,7 +171,7 @@
         "id": 11,
         "time": "Thu 26 3:30 PM",
         "opponent": "Initial Opponent (see schedule)",
-        "arena": "Lewisville Lightning Maltais Truro Bearcats - Campbell Greenfoot Energy Center (Rink B)",
+        "arena": "Greenfoot Energy Center",
         "onWin": 17,
         "onLoss": 30,
         "tier": "TBD"
@@ -353,7 +353,7 @@
         "id": 7,
         "time": "Thu 26 6:00 PM",
         "opponent": "Initial Opponent (see schedule)",
-        "arena": "Dieppe Memramcook Aigles Stubbs Truro Bearcats Campbell St. Margaret's Centre (Fountain)",
+        "arena": "St. Margaret's Centre",
         "onWin": 13,
         "onLoss": 26,
         "tier": "TBD"

@@ -1,0 +1,34 @@
+name: Sync GrayJay Tournament Schedule
+
+on:
+  schedule:
+    # Run every 30 minutes on Saturday and Sunday
+    - cron: '*/30 * * * 6,0'
+    # Run hourly on Thursday and Friday
+    - cron: '0 * * * 4,5'
+  workflow_dispatch: # Allows manual trigger from GH Actions UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Install Puppeteer browsers
+        run: npx puppeteer browsers install chrome
+        
+      - name: Run Scraper Sync
+        run: npm run sync
+        env:
+          # Optional: Add any future environment variables here if needed
+          CI: true

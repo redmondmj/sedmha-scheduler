@@ -27,3 +27,15 @@ firebase-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Debug & scratch files
+*.html
+!public/**/*.html
+tables*.json
+u11a_api.json
+u11aa_female_api.json
+u13c_api.json
+u13c_1000.json
+fetch_*.cjs
+inspect_*.cjs
+inspect_*.js
