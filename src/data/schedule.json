@@ -13,6 +13,12 @@
       "start_game": 11
     },
     {
+      "id": "u13b-truro",
+      "name": "U13B Truro Bearcats",
+      "level": "U13 B",
+      "start_game": 2
+    },
+    {
       "id": "u15c-truro",
       "name": "U15C Truro Bearcats",
       "level": "U15 C",
@@ -346,6 +352,125 @@
         "onWin": null,
         "onLoss": null,
         "tier": "Civic (CHAMPIONSHIP)"
+      }
+    },
+    "u13b": {
+      "2": {
+        "id": 2,
+        "time": "Thu 26 3:30 PM",
+        "opponent": "Initial Opponent (see schedule)",
+        "arena": "St. Margaret's Centre",
+        "onWin": 9,
+        "onLoss": 23,
+        "tier": "TBD"
+      },
+      "9": {
+        "id": 9,
+        "time": "Fri 27 8:00 AM",
+        "opponent": "Winner Game 1 vs Winner Game 2",
+        "arena": "",
+        "onWin": 15,
+        "onLoss": 13,
+        "tier": "TBD"
+      },
+      "13": {
+        "id": 13,
+        "time": "Fri 27 3:30 PM",
+        "opponent": "Loser Game 9 vs Loser Game 10",
+        "arena": "",
+        "onWin": 17,
+        "onLoss": 29,
+        "tier": "TBD"
+      },
+      "15": {
+        "id": 15,
+        "time": "Fri 27 5:00 PM",
+        "opponent": "Winner Game 9 vs Winner Game 10",
+        "arena": "",
+        "onWin": 20,
+        "onLoss": 17,
+        "tier": "TBD"
+      },
+      "17": {
+        "id": 17,
+        "time": "Sat 28 8:00 AM",
+        "opponent": "Loser Game 15 vs Winner Game 13",
+        "arena": "",
+        "onWin": 19,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "19": {
+        "id": 19,
+        "time": "Sat 28 6:30 PM",
+        "opponent": "Winner Game 17 vs Winner Game 18",
+        "arena": "",
+        "onWin": 21,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "20": {
+        "id": 20,
+        "time": "Sat 28 5:00 PM",
+        "opponent": "Winner Game 15 vs Winner Game 16",
+        "arena": "",
+        "onWin": 0,
+        "onLoss": 21,
+        "tier": "TBD"
+      },
+      "21": {
+        "id": 21,
+        "time": "Sun 29 9:30 AM",
+        "opponent": "Winner Game 19 vs Loser Game 20",
+        "arena": "",
+        "onWin": 0,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "0": {
+        "id": 0,
+        "time": "Sun 29 2:30 PM",
+        "opponent": "Championship Game",
+        "arena": "",
+        "onWin": null,
+        "onLoss": null,
+        "tier": "Odyssey (CHAMPIONSHIP)"
+      },
+      "23": {
+        "id": 23,
+        "time": "Fri 27 5:00 PM",
+        "opponent": "Loser Game 1 vs Loser Game 2",
+        "arena": "",
+        "onWin": 27,
+        "onLoss": 32,
+        "tier": "TBD"
+      },
+      "27": {
+        "id": 27,
+        "time": "Sat 28 10:00 AM",
+        "opponent": "Winner Game 23 vs Winner Game 24",
+        "arena": "",
+        "onWin": 29,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "29": {
+        "id": 29,
+        "time": "Sat 28 6:30 PM",
+        "opponent": "Winner Game 27 vs Loser Game 13",
+        "arena": "",
+        "onWin": null,
+        "onLoss": null,
+        "tier": "Civic (CHAMPIONSHIP)"
+      },
+      "32": {
+        "id": 32,
+        "time": "Sat 28 11:00 AM",
+        "opponent": "Loser Game 23 vs Loser Game 24",
+        "arena": "",
+        "onWin": null,
+        "onLoss": null,
+        "tier": "Eliminated"
       }
     },
     "u15c": {

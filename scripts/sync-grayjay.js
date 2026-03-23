@@ -16,6 +16,7 @@ const db = getFirestore(app);
 const TEAM_URLS = {
   // TEST MODE: Pointing u11a-truro to the completed u11aa-female division to simulate an active tournament
   "u11a-truro": "https://play.sedmha.com/l/1072/u11-a/schedule/",
+  "u13b-truro": "https://play.sedmha.com/l/1077/u13-b/schedule/",
   "u13c-truro": "https://play.sedmha.com/l/1078/u13-c/schedule/",
   "u15c-truro": "https://play.sedmha.com/l/1082/u15-c/schedule/"
 };
@@ -123,6 +124,14 @@ async function main() {
     let dbData = stateDoc.exists() ? stateDoc.data() : {};
     let teamStates = dbData.teamStates || scheduleData.teams.map((t) => ({ teamId: t.id, currentGameId: t.start_game, history: [] }));
     let gamesConfig = dbData.gamesConfig || {};
+
+    // Merge any new teams from schedule.json that aren't in Firebase yet
+    for (const team of scheduleData.teams) {
+        if (!teamStates.find(s => s.teamId === team.id)) {
+            console.log(`-> Adding new team: ${team.id}`);
+            teamStates.push({ teamId: team.id, currentGameId: team.start_game, history: [] });
+        }
+    }
 
     let madeChanges = false;
 
