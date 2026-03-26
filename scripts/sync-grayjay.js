@@ -18,7 +18,8 @@ const TEAM_URLS = {
   "u11a-truro": "https://play.sedmha.com/l/1072/u11-a/schedule/",
   "u13b-truro": "https://play.sedmha.com/l/1077/u13-b/schedule/",
   "u13c-truro": "https://play.sedmha.com/l/1078/u13-c/schedule/",
-  "u15c-truro": "https://play.sedmha.com/l/1082/u15-c/schedule/"
+  "u15c-truro": "https://play.sedmha.com/l/1082/u15-c/schedule/",
+  "u18aa-truro": "https://play.sedmha.com/l/1083/u18-aa/teams/schedule/11418/truro-bearcats/"
 };
 
 // TEST MODE: Tracking the Hawks to prove parsing works on a completed division

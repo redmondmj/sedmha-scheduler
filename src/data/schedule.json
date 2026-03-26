@@ -23,6 +23,12 @@
       "name": "U15C Truro Bearcats",
       "level": "U15 C",
       "start_game": 7
+    },
+    {
+      "id": "u18aa-truro",
+      "name": "U18AA Truro Bearcats",
+      "level": "U18 AA",
+      "start_game": 1
     }
   ],
   "games": {
@@ -608,6 +614,125 @@
         "onWin": null,
         "onLoss": null,
         "tier": "Odyssey (CHAMPIONSHIP)"
+      }
+    },
+    "u18aa": {
+      "1": {
+        "id": 1,
+        "time": "Thu 26 9:00 PM",
+        "opponent": "Initial Opponent (see schedule)",
+        "arena": "RBC Centre - Rink D",
+        "onWin": 7,
+        "onLoss": 5,
+        "tier": "TBD"
+      },
+      "5": {
+        "id": 5,
+        "time": "Fri 27 11:30 AM",
+        "opponent": "Loser Game 1 vs Loser Game 2",
+        "arena": "",
+        "onWin": 9,
+        "onLoss": 16,
+        "tier": "TBD"
+      },
+      "7": {
+        "id": 7,
+        "time": "Fri 27 12:30 PM",
+        "opponent": "Winner Game 1 vs Winner Game 2",
+        "arena": "",
+        "onWin": 12,
+        "onLoss": 10,
+        "tier": "TBD"
+      },
+      "9": {
+        "id": 9,
+        "time": "Fri 27 8:30 PM",
+        "opponent": "Winner Game 5 vs Loser Game 8",
+        "arena": "",
+        "onWin": 11,
+        "onLoss": 17,
+        "tier": "TBD"
+      },
+      "10": {
+        "id": 10,
+        "time": "Fri 27 8:30 PM",
+        "opponent": "Winner Game 6 vs Loser Game 7",
+        "arena": "",
+        "onWin": 11,
+        "onLoss": 16,
+        "tier": "TBD"
+      },
+      "11": {
+        "id": 11,
+        "time": "Sat 28 1:00 PM",
+        "opponent": "Winner Game 9 vs Winner Game 10",
+        "arena": "",
+        "onWin": 13,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "12": {
+        "id": 12,
+        "time": "Sat 28 2:00 PM",
+        "opponent": "Winner Game 7 vs Winner Game 8",
+        "arena": "",
+        "onWin": 13,
+        "onLoss": 14,
+        "tier": "TBD"
+      },
+      "13": {
+        "id": 13,
+        "time": "Sat 28 8:00 PM",
+        "opponent": "Winner Game 11 vs Winner Game 12",
+        "arena": "",
+        "onWin": 15,
+        "onLoss": 14,
+        "tier": "TBD"
+      },
+      "14": {
+        "id": 14,
+        "time": "Sun 29 9:30 AM",
+        "opponent": "Loser Game 12 vs Loser Game 13",
+        "arena": "",
+        "onWin": 15,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "15": {
+        "id": 15,
+        "time": "Sun 29 3:00 PM",
+        "opponent": "Winner Game 14 vs Winner Game 13",
+        "arena": "",
+        "onWin": null,
+        "onLoss": null,
+        "tier": "Odyssey (CHAMPIONSHIP)"
+      },
+      "16": {
+        "id": 16,
+        "time": "Sat 28 2:30 PM",
+        "opponent": "Loser Game 5 vs Loser Game 10",
+        "arena": "",
+        "onWin": 18,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "17": {
+        "id": 17,
+        "time": "Sat 28 3:30 PM",
+        "opponent": "Loser Game 6 vs Loser Game 9",
+        "arena": "",
+        "onWin": 18,
+        "onLoss": null,
+        "tier": "TBD"
+      },
+      "18": {
+        "id": 18,
+        "time": "Sun 29 12:30 PM",
+        "opponent": "Winner Game 16 vs Winner Game 17",
+        "arena": "",
+        "onWin": null,
+        "onLoss": null,
+        "tier": "Accord (CHAMPIONSHIP)"
       }
     }
   },

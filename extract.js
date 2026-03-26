@@ -97,45 +97,29 @@ Sun 29 12:30 PM U13 C 46 Winner Game 45 Accord Championship Winner Game 44 RBC C
 Sun 29 2:30 PM U13 C 29 Winner Game 27 Odyssey Championship Winner Game 28 Greenfoot Energy Center (Rink B)
 `.trim().split('\n');
 
-const u15_lines = `
-Thu 26 4:30 PM U15 C 1 Shediac Cap Pele Predators Halifax Hawks Blue Greenfoot Energy Center (Rink C)
-Thu 26 4:30 PM U15 C 2 Riverview Blues Spryfield Lions CFB Halifax - Shearwater Arena
-Thu 26 4:30 PM U15 C 3 Sackville Rangers White Kings County Kings Team 2 Spryfield Lions Rink
-Thu 26 4:30 PM U15 C 4 Sackville Flyers South Shore Lumberjacks Centennial Arena (Halifax)
-Thu 26 6:00 PM U15 C 5 Moncton Hawks Cormier Clare-Digby Raven Centennial Arena (Halifax)
-Thu 26 6:00 PM U15 C 6 Dartmouth Whalers Black Cole Harbour Wings East Hants Sportsplex (Ice Pad B)
-Thu 26 6:00 PM U15 C 7 Dieppe Memramcook Aigles Stubbs Truro Bearcats Campbell St. Margaret's Centre (Fountain)
-Thu 26 6:00 PM U15 C 8 West Kent Warriors Team 2 Sackville Flyers Orange Spryfield Lions Rink
-Fri 27 8:00 AM U15 C 10 Winner Game 3 Winner Game 4 Greenfoot Energy Center (Rink B)
-Fri 27 9:00 AM U15 C 11 Winner Game 5 Winner Game 6 Greenfoot Energy Center (Rink A)
-Fri 27 12:30 PM U15 C 13 Winner Game 8 Winner Game 7 Greenfoot Energy Center (Rink B)
-Fri 27 10:00 AM U15 C 12 Winner Game 1 Winner Game 2 Greenfoot Energy Center (Rink B)
-Fri 27 2:30 PM U15 C 24 Loser Game 5 Loser Game 6 Greenfoot Energy Center (Rink B)
-Fri 27 4:00 PM U15 C 23 Loser Game 1 Loser Game 2 Greenfoot Energy Center (Rink B)
-Fri 27 5:30 PM U15 C 25 Loser Game 3 Loser Game 4 Greenfoot Energy Center (Rink D)
-Fri 27 6:00 PM U15 C 26 Loser Game 8 Loser Game 7 Spryfield Lions Rink
-Fri 27 7:00 PM U15 C 14 Winner Game 10 Winner Game 11 Greenfoot Energy Center (Rink D)
-Fri 27 8:30 PM U15 C 15 Winner Game 12 Winner Game 13 Greenfoot Energy Center (Rink C)
-Sat 28 8:00 AM U15 C 33 Loser Game 24 Loser Game 23 Greenfoot Energy Center (Rink D)
-Sat 28 8:30 AM U15 C 28 Loser Game 10 Winner Game 23 Greenfoot Energy Center (Rink A)
-Sat 28 8:30 AM U15 C 27 Loser Game 11 Winner Game 24 Greenfoot Energy Center (Rink B)
-Sat 28 9:30 AM U15 C 29 Loser Game 12 Winner Game 25 Greenfoot Energy Center (Rink B)
-Sat 28 10:00 AM U15 C 30 Loser Game 13 Winner Game 26 Greenfoot Energy Center (Rink A)
-Sat 28 10:00 AM U15 C 16 Winner Game 14 Winner Game 15 Greenfoot Energy Center (Rink D)
-Sat 28 11:30 AM U15 C 34 Loser Game 26 Loser Game 25 Greenfoot Energy Center (Rink B)
-Sat 28 1:00 PM U15 C 17 Loser Game 14 Loser Game 15 RBC Centre - Rink B
-Sat 28 2:30 PM U15 C 31 Winner Game 27 Winner Game 28 RBC Centre - Rink C
-Sat 28 2:30 PM U15 C 32 Winner Game 29 Winner Game 30 RBC Centre - Rink D
-Sat 28 3:30 PM U15 C 35 Winner Game 33 Winner Game 34 RBC Centre - Rink B
-Sat 28 7:00 PM U15 C 18 Winner Game 16 Winner Game 17 Greenfoot Energy Center (Rink D)
-Sun 29 8:00 AM U15 C 37 Winner Game 31 Winner Game 32 RBC Centre - Rink C
-Sun 29 10:00 AM U15 C 36 Civic Final Winner Game 35 Centennial Arena (Halifax)
-Sun 29 12:30 PM U15 C 38 Accord Championship Winner Game 37 Centennial Arena (Halifax)
-Sun 29 2:30 PM U15 C 19 Odyssey Championship Winner Game 18 Centennial Arena (Halifax)
+const u18_lines = `
+Thu 26 9:00 PM U18 AA 1 Bedford Blues Truro Bearcats RBC Centre - Rink D
+Thu 26 9:00 PM U18 AA 2 Cole Harbour Wings Moncton Hawks Shearwater Arena
+Thu 26 9:00 PM U18 AA 3 Antigonish Bulldogs Sackville Flyers Zatzman Sportsplex
+Thu 26 9:00 PM U18 AA 4 Queens County Cougars Dartmouth Whalers Spryfield Lions Rink
+Fri 27 11:30 AM U18 AA 5 Loser Game 1 Loser Game 2 RBC Centre - Rink C
+Fri 27 12:30 PM U18 AA 6 Loser Game 3 Loser Game 4 RBC Centre - Rink B
+Fri 27 12:30 PM U18 AA 7 Winner Game 1 Winner Game 2 RBC Centre - Rink D
+Fri 27 1:00 PM U18 AA 8 Winner Game 3 Winner Game 4 RBC Centre - Rink A
+Fri 27 8:30 PM U18 AA 9 Winner Game 5 Loser Game 8 RBC Centre - Rink A
+Fri 27 8:30 PM U18 AA 10 Winner Game 6 Loser Game 7 RBC Centre - Rink C
+Sat 28 1:00 PM U18 AA 11 Winner Game 9 Winner Game 10 Cole Harbour Place (Scotia 2)
+Sat 28 2:00 PM U18 AA 12 Winner Game 7 Winner Game 8 Cole Harbour Place (Scotia 1)
+Sat 28 8:00 PM U18 AA 13 Winner Game 11 Winner Game 12 Greenfoot Energy Center (Rink C)
+Sun 29 9:30 AM U18 AA 14 Loser Game 12 Loser Game 13 RBC Centre - Rink D
+Sun 29 3:00 PM U18 AA 15 Winner Game 14 Odyssey Championship Winner Game 13 Greenfoot Energy Center (Rink C)
+Sat 28 2:30 PM U18 AA 16 Loser Game 5 Loser Game 10 RBC Centre - Rink A
+Sat 28 3:30 PM U18 AA 17 Loser Game 6 Loser Game 9 Cole Harbour Place (Scotia 1)
+Sun 29 12:30 PM U18 AA 18 Winner Game 16 Accord Championship Winner Game 17 Cole Harbour Place (Scotia 2)
 `.trim().split('\n');
 
 function parseLine(line) {
-    const m = line.match(/^(Thu 26|Fri 27|Sat 28|Sun 29) (\d{1,2}:\d{2} (?:AM|PM)) (U\d+ [A-Z]) (\d+) (.*)$/);
+    const m = line.match(/^(Thu 26|Fri 27|Sat 28|Sun 29) (\d{1,2}:\d{2} (?:AM|PM)) (U\d+ [A-Z]+) (\d+) (.*)$/);
     if (!m) {
         console.log("Failed to parse:", line);
         return null;
