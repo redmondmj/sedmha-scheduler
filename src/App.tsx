@@ -150,10 +150,30 @@ function App() {
     }
   };
 
+  const ARENA_ALIASES: Record<string, string> = {
+    "smc": "St. Margaret's Centre",
+    "gec": "Greenfoot Energy Center",
+    "rbc": "RBC Centre",
+    "chp": "Cole Harbour Place",
+    "ehs": "East Hants Sportsplex",
+    "centennial": "Centennial Arena",
+    "spryfield": "Spryfield Lions Rink",
+    "zatzman": "Zatzman Sportsplex",
+    "shearwater": "Shearwater Arena",
+    "bmo": "BMO Centre",
+  };
+
   const getArenaLink = (arenaName: string | null | undefined) => {
     if (!arenaName) return null;
-    const key = Object.keys(scheduleData.arenas).find(k => arenaName.toLowerCase().includes(k.toLowerCase()));
-    return key ? (scheduleData.arenas as any)[key] : null;
+    const lower = arenaName.toLowerCase();
+    // Direct substring match against arenas map
+    const directKey = Object.keys(scheduleData.arenas).find(k => lower.includes(k.toLowerCase()));
+    if (directKey) return (scheduleData.arenas as any)[directKey];
+    // Alias match for abbreviated API names (e.g. "SMC Fountain" -> "St. Margaret's Centre")
+    for (const [abbr, fullName] of Object.entries(ARENA_ALIASES)) {
+      if (lower.includes(abbr)) return (scheduleData.arenas as any)[fullName] || null;
+    }
+    return null;
   };
 
   const handleWhatIf = (gameId: number, win: boolean) => {
