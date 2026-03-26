@@ -14,11 +14,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const TEAM_URLS = {
-  // TEST MODE: Pointing u11a-truro to the completed u11aa-female division to simulate an active tournament
-  "u11a-truro": "https://play.sedmha.com/l/1072/u11-a/schedule/",
-  "u13b-truro": "https://play.sedmha.com/l/1077/u13-b/schedule/",
-  "u13c-truro": "https://play.sedmha.com/l/1078/u13-c/schedule/",
-  "u15c-truro": "https://play.sedmha.com/l/1082/u15-c/schedule/",
+  "u11a-truro": "https://play.sedmha.com/l/1072/u11-a/teams/schedule/11262/truro-bearcats/",
+  "u13b-truro": "https://play.sedmha.com/l/1077/u13-b/teams/schedule/11342/truro-bearcats/",
+  "u13c-truro": "https://play.sedmha.com/l/1078/u13-c/teams/schedule/11363/trurobearcats-campbell/",
+  "u15c-truro": "https://play.sedmha.com/l/1082/u15-c/teams/schedule/11479/trurobearcatscampbell/",
   "u18aa-truro": "https://play.sedmha.com/l/1083/u18-aa/teams/schedule/11418/truro-bearcats/"
 };
 
@@ -81,11 +80,27 @@ async function scrapeTeamSchedule(teamId, url) {
             const hasRealVenue = game.venue_short_name || game.venue_name;
             // Only overwrite if this game has a real venue, or no entry exists yet
             if (!fullSchedule[gameKey] || hasRealVenue) {
-                fullSchedule[gameKey] = {
+                let formattedTime = null;
+                if (game.game_start_timestamp) {
+                    const dateObj = new Date(game.game_start_timestamp * 1000);
+                    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                    const day = days[dateObj.getDay()];
+                    const dateNum = dateObj.getDate();
+                    let hours = dateObj.getHours();
+                    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    if (hours === 0) hours = 12;
+                    formattedTime = `${day} ${dateNum} ${hours}:${minutes} ${ampm}`;
+                }
+
+                const entry = {
                     opponent: `${aName} vs ${bName}`,
                     arena: game.venue_short_name || game.venue_name || "TBD",
                     tier: game.subseason_name || "TBD",
                 };
+                if (formattedTime) entry.time = formattedTime;
+                fullSchedule[gameKey] = entry;
             }
         }
         

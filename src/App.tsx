@@ -176,6 +176,7 @@ function App() {
       if (liveGames[gameId].arena) currentGames[gameId].arena = liveGames[gameId].arena;
       if (liveGames[gameId].opponent) currentGames[gameId].opponent = liveGames[gameId].opponent;
       if (liveGames[gameId].tier && liveGames[gameId].tier !== "TBD") currentGames[gameId].tier = liveGames[gameId].tier;
+      if (liveGames[gameId].time) currentGames[gameId].time = liveGames[gameId].time;
     }
   });
   
