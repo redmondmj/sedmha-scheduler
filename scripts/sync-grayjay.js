@@ -24,28 +24,45 @@ const TEAM_URLS = {
 // TEST MODE: Tracking the Hawks to prove parsing works on a completed division
 const TARGET_NAME = "Bearcats";
 
-async function fetchApiGames(leagueId) {
-    const upcomingUrl = `https://play.sedmha.com/api/games/upcoming/?master_schedule=1&league_id=${leagueId}&limit=1000`;
-    const pastUrl = `https://play.sedmha.com/api/games/past/?master_schedule=1&league_id=${leagueId}&limit=1000`;
-    
+async function fetchTeamGames(teamGrayjayId) {
+    // Fetch team-specific games from 3 endpoints
     let allGames = [];
     try {
-        const uRes = await fetch(upcomingUrl);
-        const uData = await uRes.json();
-        if (uData.data && uData.data.games_and_events) {
-            allGames = allGames.concat(uData.data.games_and_events.filter(g => g.row_type === 'game'));
+        // Today's games (includes same-day finished games with scores)
+        const todayRes = await fetch(`https://play.sedmha.com/api/games/upcoming/${teamGrayjayId}?today=1&limit=100&offset=0`);
+        const todayData = await todayRes.json();
+        if (todayData.data && Array.isArray(todayData.data)) {
+            allGames = allGames.concat(todayData.data);
         }
         
-        const pRes = await fetch(pastUrl);
-        const pData = await pRes.json();
-        if (pData.data && pData.data.games) {
-            allGames = allGames.concat(pData.data.games.filter(g => g.row_type === 'game'));
+        // Upcoming games (future games)
+        const upRes = await fetch(`https://play.sedmha.com/api/games/upcoming/${teamGrayjayId}?limit=100&offset=0`);
+        const upData = await upRes.json();
+        if (upData.data && Array.isArray(upData.data)) {
+            allGames = allGames.concat(upData.data);
+        }
+        
+        // Past games (completed games from previous days)
+        const pastRes = await fetch(`https://play.sedmha.com/api/games/past/?team_id=${teamGrayjayId}&limit=100&offset=0`);
+        const pastData = await pastRes.json();
+        if (pastData.data && Array.isArray(pastData.data)) {
+            allGames = allGames.concat(pastData.data);
+        } else if (pastData.data?.games && Array.isArray(pastData.data.games)) {
+            allGames = allGames.concat(pastData.data.games);
         }
     } catch (e) {
-        console.error("API fetch failed", e);
+        console.error("Team API fetch failed", e);
     }
     
-    // Sort chronologically by game_start_timestamp, push nulls to the end
+    // Deduplicate by game_id
+    const seen = new Set();
+    allGames = allGames.filter(g => {
+        if (!g.game_id || seen.has(g.game_id)) return false;
+        seen.add(g.game_id);
+        return true;
+    });
+    
+    // Sort chronologically
     allGames.sort((a,b) => {
         const tsA = a.game_start_timestamp || Number.MAX_SAFE_INTEGER;
         const tsB = b.game_start_timestamp || Number.MAX_SAFE_INTEGER;
@@ -54,54 +71,103 @@ async function fetchApiGames(leagueId) {
     return allGames;
 }
 
-async function scrapeTeamSchedule(teamId, url) {
-    console.log(`Fetching chronologically ordered games for ${teamId} at ${url} via API...`);
-    const match = url.match(/\/l\/(\d+)\//);
-    if (!match) {
-        console.error("Could not extract league ID from URL:", url);
-        return { realGames: [], upcomingOpponent: null, upcomingArena: null };
+async function fetchLeagueGames(leagueId) {
+    // Fetch ALL games in the league for fullSchedule (all teams, not just Bearcats)
+    const url = `https://play.sedmha.com/api/games/upcoming/?master_schedule=1&league_id=${leagueId}&limit=1000`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.data && data.data.games_and_events) {
+            return data.data.games_and_events.filter(g => g.row_type === 'game');
+        }
+    } catch (e) {
+        console.error("League API fetch failed", e);
     }
-    const leagueId = match[1];
-    const games = await fetchApiGames(leagueId);
+    return [];
+}
+
+async function scrapeTeamSchedule(teamId, url) {
+    console.log(`Fetching games for ${teamId} at ${url} via API...`);
+    const leagueMatch = url.match(/\/l\/(\d+)\//);
+    const teamMatch = url.match(/\/schedule\/(\d+)\//);
+    if (!leagueMatch || !teamMatch) {
+        console.error("Could not extract IDs from URL:", url);
+        return { realGames: [], upcomingOpponent: null, upcomingArena: null, fullSchedule: {} };
+    }
+    const leagueId = leagueMatch[1];
+    const teamGrayjayId = teamMatch[1];
+    
+    // Fetch team-specific games (for results + upcoming) and league-wide games (for full schedule)
+    const [teamGames, leagueGames] = await Promise.all([
+        fetchTeamGames(teamGrayjayId),
+        fetchLeagueGames(leagueId)
+    ]);
     
     const realGames = [];
     const fullSchedule = {};
     let upcomingOpponent = null;
     let upcomingArena = null;
 
-    for (const game of games) {
-        if (game.row_type !== 'game') continue;
-        
+    // Build fullSchedule from league-wide games (all teams in the division)
+    for (const game of leagueGames) {
+        if (!game.game_number) continue;
+        const gameKey = game.game_number.toString();
+        const hasRealVenue = game.venue_short_name || game.venue_name;
+        if (!fullSchedule[gameKey] || hasRealVenue) {
+            let formattedTime = null;
+            if (game.game_start_timestamp) {
+                const dateObj = new Date(game.game_start_timestamp * 1000);
+                const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                const day = days[dateObj.getDay()];
+                const dateNum = dateObj.getDate();
+                let hours = dateObj.getHours();
+                const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                if (hours === 0) hours = 12;
+                formattedTime = `${day} ${dateNum} ${hours}:${minutes} ${ampm}`;
+            }
+            const aName = game.team_a_name || "";
+            const bName = game.team_b_name || "";
+            const entry = {
+                opponent: `${aName} vs ${bName}`,
+                arena: game.venue_short_name || game.venue_name || "TBD",
+                tier: game.subseason_name || "TBD",
+            };
+            if (formattedTime) entry.time = formattedTime;
+            fullSchedule[gameKey] = entry;
+        }
+    }
+
+    // Process team-specific games for results and upcoming opponent
+    for (const game of teamGames) {
         const aName = game.team_a_name || "";
         const bName = game.team_b_name || "";
         
+        // Also add team games to fullSchedule (they may include opening round games missing from league)
         if (game.game_number) {
             const gameKey = game.game_number.toString();
-            const hasRealVenue = game.venue_short_name || game.venue_name;
-            // Only overwrite if this game has a real venue, or no entry exists yet
-            if (!fullSchedule[gameKey] || hasRealVenue) {
-                let formattedTime = null;
-                if (game.game_start_timestamp) {
-                    const dateObj = new Date(game.game_start_timestamp * 1000);
-                    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-                    const day = days[dateObj.getDay()];
-                    const dateNum = dateObj.getDate();
-                    let hours = dateObj.getHours();
-                    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    hours = hours % 12;
-                    if (hours === 0) hours = 12;
-                    formattedTime = `${day} ${dateNum} ${hours}:${minutes} ${ampm}`;
-                }
-
-                const entry = {
-                    opponent: `${aName} vs ${bName}`,
-                    arena: game.venue_short_name || game.venue_name || "TBD",
-                    tier: game.subseason_name || "TBD",
-                };
-                if (formattedTime) entry.time = formattedTime;
-                fullSchedule[gameKey] = entry;
+            let formattedTime = null;
+            if (game.game_start_timestamp) {
+                const dateObj = new Date(game.game_start_timestamp * 1000);
+                const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                const day = days[dateObj.getDay()];
+                const dateNum = dateObj.getDate();
+                let hours = dateObj.getHours();
+                const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                if (hours === 0) hours = 12;
+                formattedTime = `${day} ${dateNum} ${hours}:${minutes} ${ampm}`;
             }
+            const entry = {
+                opponent: `${aName} vs ${bName}`,
+                arena: game.venue_short_name || game.venue_name || "TBD",
+                tier: game.subseason_name || "TBD",
+            };
+            if (formattedTime) entry.time = formattedTime;
+            // Team-specific data overrides league data (more accurate for our team)
+            fullSchedule[gameKey] = entry;
         }
         
         if (aName.includes(TARGET_NAME) || bName.includes(TARGET_NAME)) {
