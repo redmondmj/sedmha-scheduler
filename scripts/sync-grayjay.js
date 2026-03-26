@@ -83,6 +83,7 @@ async function scrapeTeamSchedule(teamId, url) {
                 fullSchedule[gameKey] = {
                     opponent: `${aName} vs ${bName}`,
                     arena: game.venue_short_name || game.venue_name || "TBD",
+                    tier: game.subseason_name || "TBD",
                 };
             }
         }

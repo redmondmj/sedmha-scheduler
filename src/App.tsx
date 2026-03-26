@@ -28,7 +28,7 @@ type TeamState = {
   }[];
 };
 
-const PIN = "1234";
+const PIN = import.meta.env.VITE_ADMIN_PIN || "0000";
 
 function App() {
   const [teamStates, setTeamStates] = useState<TeamState[]>(
@@ -150,9 +150,10 @@ function App() {
     }
   };
 
-  const getArenaLink = (arenaName: string) => {
-    const key = Object.keys(scheduleData.arenas).find(k => arenaName.includes(k));
-    return key ? scheduleData.arenas[key as keyof typeof scheduleData.arenas] : null;
+  const getArenaLink = (arenaName: string | null | undefined) => {
+    if (!arenaName) return null;
+    const key = Object.keys(scheduleData.arenas).find(k => arenaName.toLowerCase().includes(k.toLowerCase()));
+    return key ? (scheduleData.arenas as any)[key] : null;
   };
 
   const handleWhatIf = (gameId: number, win: boolean) => {
@@ -174,6 +175,7 @@ function App() {
     if (liveGames[gameId]) {
       if (liveGames[gameId].arena) currentGames[gameId].arena = liveGames[gameId].arena;
       if (liveGames[gameId].opponent) currentGames[gameId].opponent = liveGames[gameId].opponent;
+      if (liveGames[gameId].tier && liveGames[gameId].tier !== "TBD") currentGames[gameId].tier = liveGames[gameId].tier;
     }
   });
   
