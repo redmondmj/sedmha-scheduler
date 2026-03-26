@@ -23,6 +23,16 @@ const TEAM_URLS = {
 
 // TEST MODE: Tracking the Hawks to prove parsing works on a completed division
 const TARGET_NAME = "Bearcats";
+const TIMEZONE = "America/Halifax";
+
+function formatTimeAtlantic(timestamp) {
+    if (!timestamp) return null;
+    const dateObj = new Date(timestamp * 1000);
+    const dayShort = dateObj.toLocaleString('en-US', { timeZone: TIMEZONE, weekday: 'short' });
+    const dateNum = dateObj.toLocaleString('en-US', { timeZone: TIMEZONE, day: 'numeric' });
+    const timeStr = dateObj.toLocaleString('en-US', { timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit', hour12: true });
+    return `${dayShort} ${dateNum} ${timeStr}`;
+}
 
 async function fetchTeamGames(teamGrayjayId) {
     // Fetch team-specific games from 3 endpoints
@@ -114,19 +124,7 @@ async function scrapeTeamSchedule(teamId, url) {
         const gameKey = game.game_number.toString();
         const hasRealVenue = game.venue_short_name || game.venue_name;
         if (!fullSchedule[gameKey] || hasRealVenue) {
-            let formattedTime = null;
-            if (game.game_start_timestamp) {
-                const dateObj = new Date(game.game_start_timestamp * 1000);
-                const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-                const day = days[dateObj.getDay()];
-                const dateNum = dateObj.getDate();
-                let hours = dateObj.getHours();
-                const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                if (hours === 0) hours = 12;
-                formattedTime = `${day} ${dateNum} ${hours}:${minutes} ${ampm}`;
-            }
+            const formattedTime = formatTimeAtlantic(game.game_start_timestamp);
             const aName = game.team_a_name || "";
             const bName = game.team_b_name || "";
             const entry = {
@@ -147,19 +145,7 @@ async function scrapeTeamSchedule(teamId, url) {
         // Also add team games to fullSchedule (they may include opening round games missing from league)
         if (game.game_number) {
             const gameKey = game.game_number.toString();
-            let formattedTime = null;
-            if (game.game_start_timestamp) {
-                const dateObj = new Date(game.game_start_timestamp * 1000);
-                const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-                const day = days[dateObj.getDay()];
-                const dateNum = dateObj.getDate();
-                let hours = dateObj.getHours();
-                const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                if (hours === 0) hours = 12;
-                formattedTime = `${day} ${dateNum} ${hours}:${minutes} ${ampm}`;
-            }
+            const formattedTime = formatTimeAtlantic(game.game_start_timestamp);
             const entry = {
                 opponent: `${aName} vs ${bName}`,
                 arena: game.venue_short_name || game.venue_name || "TBD",
